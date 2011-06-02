@@ -3,64 +3,64 @@
 
 @implementation TVCell_Phones : CPView
 {
-	CPTextField		firstLabel;
-	CPTextField		secondLabel; 
-	CPTextField		firstTag;
-	CPTextField		secondTag; 
+    CPTextField firstLabel;
+    CPTextField secondLabel; 
+    CPTextField firstTag;
+    CPTextField secondTag; 
 }
 
 - (id) initWithFrame:(CGRect) frame
 {
-	self=[super initWithFrame:frame];
-	if( self )
-	{
-		firstLabel = [[CPTextField alloc] initWithFrame:CGRectMake(3.0,3.0,110.0,20.0)];
-		secondLabel = [[CPTextField alloc] initWithFrame:CGRectMake(3.0,26.0,110.0,20.0)];
-		
-		firstTag = [[CPTextField alloc] initWithFrame:CGRectMake(115.0,3.0,55.0,20.0)];
-		secondTag = [[CPTextField alloc] initWithFrame:CGRectMake(115.0,26.0,55.0,20.0)];
-		
-		[firstLabel setFont:[CPFont systemFontOfSize:14.0]];
-		[secondLabel setFont:[CPFont systemFontOfSize:14.0]];
+    self=[super initWithFrame:frame];
+    if( self )
+    {
+        firstLabel = [[CPTextField alloc] initWithFrame:CGRectMake(3.0,3.0,110.0,20.0)];
+        secondLabel = [[CPTextField alloc] initWithFrame:CGRectMake(3.0,26.0,110.0,20.0)];
+    
+        firstTag = [[CPTextField alloc] initWithFrame:CGRectMake(115.0,3.0,55.0,20.0)];
+        secondTag = [[CPTextField alloc] initWithFrame:CGRectMake(115.0,26.0,55.0,20.0)];
+    
+        [firstLabel setFont:[CPFont systemFontOfSize:14.0]];
+        [secondLabel setFont:[CPFont systemFontOfSize:14.0]];
         [firstLabel setAlignment: CPRightTextAlignment];
         [secondLabel setAlignment: CPRightTextAlignment];
-		
-		[firstTag setFont:[CPFont systemFontOfSize:12.0]];
-		[firstTag setTextColor:[CPColor grayColor]];
-		[secondTag setFont:[CPFont systemFontOfSize:12.0]];
-		[secondTag setTextColor:[CPColor grayColor]];	
-		[self addSubview:firstLabel];
-		[self addSubview:secondLabel];
-		[self addSubview:firstTag];
-		[self addSubview:secondTag];
-	}
-	return self;
+
+        [firstTag setFont:[CPFont systemFontOfSize:12.0]];
+        [firstTag setTextColor:[CPColor grayColor]];
+        [secondTag setFont:[CPFont systemFontOfSize:12.0]];
+        [secondTag setTextColor:[CPColor grayColor]];	
+        [self addSubview:firstLabel];
+        [self addSubview:secondLabel];
+        [self addSubview:firstTag];
+        [self addSubview:secondTag];
+    }
+    return self;
 }
 
 - (void) setObjectValue:(id) value
 {
-	if( value )
-	{
-		var	phonesCount;
-		phonesCount=[value.phones count];
-		if( phonesCount )
-		{
-			[firstLabel setStringValue:[value.phones objectAtIndex:0].value];
-			[firstTag setStringValue:[value.phones objectAtIndex:0].key];
-			if( phonesCount>1 )
-			{
-				[secondLabel setStringValue:[value.phones objectAtIndex:1].value];
-				[secondTag setStringValue:[value.phones objectAtIndex:1].key];		
-			}
-		}
-	}
-	else
-	{
-		[firstLabel setStringValue:@""];
-		[secondLabel setStringValue:@""];
-		[firstTag setStringValue:@""];
-		[secondTag setStringValue:@""];
-	}
+    if( value )
+    {
+        var phonesCount;
+        phonesCount=[value.phones count];
+        if( phonesCount )
+        {
+            [firstLabel setStringValue:[[value.phones objectAtIndex:0] objectAtIndex:1]];
+            [firstTag setStringValue:[[value.phones objectAtIndex:0] objectAtIndex:0]];
+            if( phonesCount>1 )
+            {
+                [secondLabel setStringValue:[[value.phones objectAtIndex:1] objectAtIndex:1]];
+                [secondTag setStringValue:[[value.phones objectAtIndex:1] objectAtIndex:0]];
+            }
+        }
+    }
+    else
+    {
+        [firstLabel setStringValue:@""];
+        [secondLabel setStringValue:@""];
+        [firstTag setStringValue:@""];
+        [secondTag setStringValue:@""];
+    }
 }
 
 - (id)initWithCoder:(CPCoder)aCoder {

@@ -1,4 +1,4 @@
-@STATIC;1.0;I;21;Foundation/CPObject.jt;1123;
+@STATIC;1.0;I;21;Foundation/CPObject.jt;1214;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 
@@ -11,6 +11,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("checkboxWithTitle:fram
     if (checkbox)
     {
         objj_msgSend(checkbox, "setTitle:", aTitle);
+        objj_msgSend(checkbox, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 15));
     }
     return checkbox;
 }

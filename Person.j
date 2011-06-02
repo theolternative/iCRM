@@ -47,7 +47,7 @@
     aPerson.fiscalID=fiscalID;
     aPerson.VAT=VAT;
     aPerson.addresses=addresses;
-    aPerson.phone=phones;
+    aPerson.phones=phones;
     aPerson.emails=emails;
     aPerson.isCompany=isCompany;
     aPerson.privacy=privacy;

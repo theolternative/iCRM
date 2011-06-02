@@ -202,14 +202,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
 },["void","CPNotification"])]);
 }
 
-p;15;EditingWindow.jt;3674;@STATIC;1.0;I;21;Foundation/CPObject.jt;3629;
+p;15;EditingWindow.jt;4182;@STATIC;1.0;I;21;Foundation/CPObject.jt;4137;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 
 editingWindow = nil;
 
 {var the_class = objj_allocateClassPair(CPObject, "EditingWindow"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("returnCode"), new objj_ivar("childView")]);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("returnCode"), new objj_ivar("childView"), new objj_ivar("scrollView")]);
 objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("childView"), function $EditingWindow__childView(self, _cmd)
 { with(self)
@@ -226,42 +226,50 @@ childView = newValue;
 class_addMethods(meta_class, [new objj_method(sel_getUid("showEditingWindowWithView:delegate:endSelector:"), function $EditingWindow__showEditingWindowWithView_delegate_endSelector_(self, _cmd, aView, aDelegate, aSelector)
 { with(self)
 {
- var application = objj_msgSend(CPApplication, "sharedApplication");
+    var application = objj_msgSend(CPApplication, "sharedApplication");
 
- if( !editingWindow )
- {
+    if( !editingWindow )
+    {
         editingWindow = objj_msgSend(objj_msgSend(CPWindow, "alloc"), "initWithContentRect:styleMask:", CGRectMake(0, 0, 500, 350), CPDocModalWindowMask | CPClosableWindowMask);
-  var contentView = objj_msgSend(editingWindow, "contentView");
-  var bounds = objj_msgSend(contentView, "bounds");
+        var contentView = objj_msgSend(editingWindow, "contentView");
+        objj_msgSend(contentView, "setBackgroundColor:", objj_msgSend(CPColor, "whiteColor"));
+        var bounds = objj_msgSend(contentView, "bounds");
 
-        var okButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:",  CGRectMake(380, 310, 100, 18));
+        var okButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:",  CGRectMake(380, 307, 100, 24));
         objj_msgSend(okButton, "setAutoresizingMask:", CPViewMinXMargin | CPViewMinYMargin);
         objj_msgSend(okButton, "setTitle:", "OK");
         objj_msgSend(okButton, "setTarget:", self);
-  objj_msgSend(okButton, "setBezelStyle:", CPRoundRectBezelStyle);
+        objj_msgSend(okButton, "setBezelStyle:", CPRoundedBezelStyle);
         objj_msgSend(okButton, "setAction:", sel_getUid("okAction:"));
         objj_msgSend(contentView, "addSubview:", okButton);
 
-        var cancelButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:",  CGRectMake(260, 310, 100, 18));
+        var cancelButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:",  CGRectMake(260, 307, 100, 24));
         objj_msgSend(cancelButton, "setAutoresizingMask:", CPViewMinXMargin | CPViewMinYMargin);
         objj_msgSend(cancelButton, "setTitle:", "Annulla");
         objj_msgSend(cancelButton, "setTarget:", self);
+        objj_msgSend(cancelButton, "setBezelStyle:", CPRoundedBezelStyle);
         objj_msgSend(cancelButton, "setAction:", sel_getUid("cancelAction:"));
         objj_msgSend(contentView, "addSubview:", cancelButton);
+
+        scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMakeZero());
+        objj_msgSend(scrollView, "setAutohidesScrollers:", YES);
+        objj_msgSend(contentView, "addSubview:", scrollView);
         childView = nil;
- }
- var bounds = objj_msgSend(aView, "bounds");
- var width = bounds.size.width+40;
- var height = bounds.size.height+80;
+    }
+    var bounds = objj_msgSend(aView, "bounds");
+    var width = bounds.size.width+60;
+    var height = bounds.size.height+100;
 
- objj_msgSend(editingWindow, "setFrameSize:", CGSizeMake(width, height));
- objj_msgSend(aView, "setFrameOrigin:", CGPointMake(20,20));
- objj_msgSend(objj_msgSend(editingWindow, "contentView"), "addSubview:", aView);
+    objj_msgSend(editingWindow, "setFrameSize:", CGSizeMake(width, height));
+    objj_msgSend(scrollView, "setFrame:", CGRectMake(20,20,bounds.size.width+20, bounds.size.height+20));
+    objj_msgSend(scrollView, "setDocumentView:", aView);
+
+
     editingWindow.childView = aView;
- editingWindow.returnCode = 0;
- objj_msgSend(application, "beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:", editingWindow, objj_msgSend(application, "mainWindow"), aDelegate, aSelector, nil);
+    editingWindow.returnCode = 0;
+    objj_msgSend(application, "beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:", editingWindow, objj_msgSend(application, "mainWindow"), aDelegate, aSelector, nil);
 
- return editingWindow;
+    return editingWindow;
 }
 },["CPWindow","CPView","id","SEL"]), new objj_method(sel_getUid("cancelAction:"), function $EditingWindow__cancelAction_(self, _cmd, sender)
 { with(self)
@@ -388,7 +396,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("objectFromJSON:"), func
 },["CPString","id"])]);
 }
 
-p;22;PeopleViewController.jt;21842;@STATIC;1.0;I;21;Foundation/CPObject.jI;24;AppKit/CPAccordionView.ji;24;TreenodeViewController.ji;8;Person.ji;17;TVCell_Fullname.ji;15;TVCell_Phones.ji;18;TVCell_Addresses.ji;15;TVCell_Emails.ji;15;EditingWindow.ji;14;THRTextField.ji;10;THRLabel.ji;13;THRCheckBox.ji;14;AddressTable.ji;14;PeoplePicker.jt;21531;
+p;22;PeopleViewController.jt;29034;@STATIC;1.0;I;21;Foundation/CPObject.jI;24;AppKit/CPAccordionView.ji;24;TreenodeViewController.ji;8;Person.ji;17;TVCell_Fullname.ji;15;TVCell_Phones.ji;18;TVCell_Addresses.ji;15;TVCell_Emails.ji;15;EditingWindow.ji;14;THRTextField.ji;10;THRLabel.ji;13;THRCheckBox.ji;14;AddressTable.ji;14;PeoplePicker.ji;9;THRList.jt;28710;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("AppKit/CPAccordionView.j", NO);
@@ -404,9 +412,10 @@ objj_executeFile("THRLabel.j", YES);
 objj_executeFile("THRCheckBox.j", YES);
 objj_executeFile("AddressTable.j", YES);
 objj_executeFile("PeoplePicker.j", YES);
+objj_executeFile("THRList.j", YES);
 
 {var the_class = objj_allocateClassPair(TreeNodeViewController, "PeopleViewController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("rowInEditing"), new objj_ivar("tvcellFullname"), new objj_ivar("tvcellPhones"), new objj_ivar("tvcellEmails"), new objj_ivar("tvcellAddresses"), new objj_ivar("inEditingPerson")]);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("rowInEditing"), new objj_ivar("tvcellFullname"), new objj_ivar("tvcellPhones"), new objj_ivar("tvcellEmails"), new objj_ivar("tvcellAddresses"), new objj_ivar("inEditingPerson"), new objj_ivar("editPersonAddressList"), new objj_ivar("editPersonPhoneList"), new objj_ivar("editPersonEmailList")]);
 objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("inEditingPerson"), function $PeopleViewController__inEditingPerson(self, _cmd)
 { with(self)
@@ -422,42 +431,43 @@ inEditingPerson = newValue;
 },["void","id"]), new objj_method(sel_getUid("refreshObjects"), function $PeopleViewController__refreshObjects(self, _cmd)
 { with(self)
 {
- if( folderId )
- {
-  var url;
-  if( objj_msgSend(searchText, "length")>2)
+    if( folderId )
+    {
+        var url;
+        if( objj_msgSend(searchText, "length")>2)
             url=objj_msgSend(CPString, "stringWithFormat:", "https://iscrizioni.iltemporitrovato.org/gestione/PHP/contacts.php?task=LISTING&folder=%d&search=%@",folderId,searchText);
-  else
+        else
             url=objj_msgSend(CPString, "stringWithFormat:", "%@%d","https://iscrizioni.iltemporitrovato.org/gestione/PHP/contacts.php?task=LISTING&folder=",folderId);
-  var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
-  listConnection = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, self);
- }
+        var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
+    listConnection = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, self);
+    }
 }
 },["void"]), new objj_method(sel_getUid("loadView"), function $PeopleViewController__loadView(self, _cmd)
 { with(self)
 {
- rowInEditing = -1;
+    rowInEditing = -1;
     inEditingPerson = objj_msgSend(objj_msgSend(Person, "alloc"), "init");
 
- var containerView = objj_msgSend(objj_msgSend(CPSplitView, "alloc"), "initWithFrame:", CGRectMake(0,0,1000,500));
- objj_msgSend(containerView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
- objj_msgSend(containerView, "setIsPaneSplitter:", YES);
+    var containerView = objj_msgSend(objj_msgSend(CPSplitView, "alloc"), "initWithFrame:", CGRectMake(0,0,1000,500));
+    objj_msgSend(containerView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+    objj_msgSend(containerView, "setIsPaneSplitter:", YES);
 
 
- var listView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,600,500));
- var toolbarView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,600,50));
- objj_msgSend(toolbarView, "setAutoresizingMask:", CPViewWidthSizable);
- objj_msgSend(toolbarView, "setBackgroundColor:", objj_msgSend(CPColor, "whiteColor"));
+    var listView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,600,500));
+    var toolbarView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,600,50));
+    objj_msgSend(toolbarView, "setAutoresizingMask:", CPViewWidthSizable);
+    objj_msgSend(toolbarView, "setBackgroundColor:", objj_msgSend(CPColor, "whiteColor"));
 
- var addButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(20,13,120,24));
+    var addButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(20,13,120,24));
 
- objj_msgSend(addButton, "setTarget:", self);
- objj_msgSend(addButton, "setAction:", sel_getUid("addPerson:"));
+    objj_msgSend(addButton, "setTarget:", self);
+    objj_msgSend(addButton, "setAction:", sel_getUid("addPerson:"));
     objj_msgSend(addButton, "setImage:", objj_msgSend(CPImage, "imageNamed:", "toolbar_quickentry.png"));
- var removeButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(160,13,120,24));
- objj_msgSend(removeButton, "setTitle:", "Rimuovi");
- objj_msgSend(removeButton, "setTarget:", self);
- objj_msgSend(removeButton, "setAction:", sel_getUid("removePerson:"));
+
+    var removeButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(160,13,120,24));
+    objj_msgSend(removeButton, "setTitle:", "Rimuovi");
+    objj_msgSend(removeButton, "setTarget:", self);
+    objj_msgSend(removeButton, "setAction:", sel_getUid("removePerson:"));
 
     var editButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(300,13,120,24));
     objj_msgSend(editButton, "setTitle:", "Modifica");
@@ -466,10 +476,10 @@ inEditingPerson = newValue;
 
     var peoplePicker = objj_msgSend(objj_msgSend(PeoplePicker, "alloc"), "initWithFrame:selectedObject:", CGRectMake(440,13,250,25), nil);
 
- var searchField = objj_msgSend(objj_msgSend(CPSearchField, "alloc"), "initWithFrame:", CGRectMake(460,10,120,30));
- objj_msgSend(searchField, "setAutoresizingMask:", CPViewMinXMargin);
- objj_msgSend(self, "addObserver:forKeyPath:options:context:", self, "searchText", (CPKeyValueObservingOptionNew), nil);
- objj_msgSend(self, "bind:toObject:withKeyPath:options:", "searchText", searchField, "objectValue", nil);
+    var searchField = objj_msgSend(objj_msgSend(CPSearchField, "alloc"), "initWithFrame:", CGRectMake(460,10,120,30));
+    objj_msgSend(searchField, "setAutoresizingMask:", CPViewMinXMargin);
+    objj_msgSend(self, "addObserver:forKeyPath:options:context:", self, "searchText", (CPKeyValueObservingOptionNew), nil);
+    objj_msgSend(self, "bind:toObject:withKeyPath:options:", "searchText", searchField, "objectValue", nil);
 
     objj_msgSend(toolbarView, "addSubview:", searchField);
     objj_msgSend(toolbarView, "addSubview:", addButton);
@@ -477,28 +487,28 @@ inEditingPerson = newValue;
     objj_msgSend(toolbarView, "addSubview:", editButton);
     objj_msgSend(toolbarView, "addSubview:", peoplePicker);
 
- var scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(0.0,50.0,600.0,450.0));
- objj_msgSend(scrollView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+    var scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(0.0,50.0,600.0,450.0));
+    objj_msgSend(scrollView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
 
- var tableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "initWithFrame:", objj_msgSend(scrollView, "bounds"));
+    var tableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "initWithFrame:", objj_msgSend(scrollView, "bounds"));
 
- objj_msgSend(tableView, "setDelegate:", self);
- objj_msgSend(tableView, "setRowHeight:",  50.0);
- objj_msgSend(tableView, "setUsesAlternatingRowBackgroundColors:", YES);
- objj_msgSend(tableView, "setDoubleAction:", sel_getUid("selectRow:"));
- objj_msgSend(tableView, "setSelectionHighlightStyle:", CPTableViewSelectionHighlightStyleSourceList);
- objj_msgSend(tableView, "setTarget:", self);
+    objj_msgSend(tableView, "setDelegate:", self);
+    objj_msgSend(tableView, "setRowHeight:",  50.0);
+    objj_msgSend(tableView, "setUsesAlternatingRowBackgroundColors:", YES);
+    objj_msgSend(tableView, "setDoubleAction:", sel_getUid("selectRow:"));
+    objj_msgSend(tableView, "setSelectionHighlightStyle:", CPTableViewSelectionHighlightStyleSourceList);
+    objj_msgSend(tableView, "setTarget:", self);
 
- var fullnameColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "Nome");
- objj_msgSend(objj_msgSend(fullnameColumn, "headerView"), "setStringValue:", "Nome");
- objj_msgSend(fullnameColumn, "setWidth:", 210.0);
+    var fullnameColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "Nome");
+    objj_msgSend(objj_msgSend(fullnameColumn, "headerView"), "setStringValue:", "Nome");
+    objj_msgSend(fullnameColumn, "setWidth:", 210.0);
 
- tvcellFullname = objj_msgSend(objj_msgSend(TVCell_Fullname, "alloc"), "initWithFrame:", CGRectMake(0,0,200,50));
- objj_msgSend(tableView, "addTableColumn:", fullnameColumn);
+    tvcellFullname = objj_msgSend(objj_msgSend(TVCell_Fullname, "alloc"), "initWithFrame:", CGRectMake(0,0,200,50));
+    objj_msgSend(tableView, "addTableColumn:", fullnameColumn);
 
- var phonesColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "Telefoni");
- objj_msgSend(objj_msgSend(phonesColumn, "headerView"), "setStringValue:", "Telefoni");
- objj_msgSend(phonesColumn, "setWidth:", 170.0);
+    var phonesColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "Telefoni");
+    objj_msgSend(objj_msgSend(phonesColumn, "headerView"), "setStringValue:", "Telefoni");
+    objj_msgSend(phonesColumn, "setWidth:", 170.0);
 
     tvcellPhones = objj_msgSend(objj_msgSend(TVCell_Phones, "alloc"), "initWithFrame:", CGRectMake(0,0,160,50));
     objj_msgSend(tableView, "addTableColumn:", phonesColumn);
@@ -510,143 +520,174 @@ inEditingPerson = newValue;
     tvcellEmails = objj_msgSend(objj_msgSend(TVCell_Emails, "alloc"), "initWithFrame:", CGRectMake(0,0,210,50));
     objj_msgSend(tableView, "addTableColumn:", emailsColumn);
 
- objj_msgSend(scrollView, "setDocumentView:", tableView);
+    objj_msgSend(scrollView, "setDocumentView:", tableView);
 
- objj_msgSend(listView, "addSubview:", toolbarView);
- objj_msgSend(listView, "addSubview:", scrollView);
+    objj_msgSend(listView, "addSubview:", toolbarView);
+    objj_msgSend(listView, "addSubview:", scrollView);
 
 
- var detailView = objj_msgSend(objj_msgSend(CPAccordionView, "alloc"), "initWithFrame:", CGRectMake(0,0,400,500));
- var profileTab = objj_msgSend(objj_msgSend(CPAccordionViewItem, "alloc"), "initWithIdentifier:", "0");
- objj_msgSend(profileTab, "setLabel:", "Dati anagrafici");
- objj_msgSend(profileTab, "setView:", objj_msgSend(self, "profileView"));
- var projectsTab = objj_msgSend(objj_msgSend(CPAccordionViewItem, "alloc"), "initWithIdentifier:", "1");
- var projectsView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,400,200));
- objj_msgSend(projectsTab, "setLabel:", "Progetti");
- objj_msgSend(projectsTab, "setView:", projectsView);
- var invoicesTab = objj_msgSend(objj_msgSend(CPAccordionViewItem, "alloc"), "initWithIdentifier:", "2");
- var invoicesView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,400,200));
- objj_msgSend(invoicesTab, "setLabel:", "Proforme e fatture");
- objj_msgSend(invoicesTab, "setView:", invoicesView);
+    var detailView = objj_msgSend(objj_msgSend(CPAccordionView, "alloc"), "initWithFrame:", CGRectMake(0,0,400,500));
+    var profileTab = objj_msgSend(objj_msgSend(CPAccordionViewItem, "alloc"), "initWithIdentifier:", "0");
+    objj_msgSend(profileTab, "setLabel:", "Dati anagrafici");
+    objj_msgSend(profileTab, "setView:", objj_msgSend(self, "profileView"));
+    var projectsTab = objj_msgSend(objj_msgSend(CPAccordionViewItem, "alloc"), "initWithIdentifier:", "1");
+    var projectsView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,400,200));
+    objj_msgSend(projectsTab, "setLabel:", "Progetti");
+    objj_msgSend(projectsTab, "setView:", projectsView);
+    var invoicesTab = objj_msgSend(objj_msgSend(CPAccordionViewItem, "alloc"), "initWithIdentifier:", "2");
+    var invoicesView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,400,200));
+    objj_msgSend(invoicesTab, "setLabel:", "Proforme e fatture");
+    objj_msgSend(invoicesTab, "setView:", invoicesView);
 
- objj_msgSend(detailView, "addItem:", profileTab);
- objj_msgSend(detailView, "addItem:", projectsTab);
- objj_msgSend(detailView, "addItem:", invoicesTab);
+    objj_msgSend(detailView, "addItem:", profileTab);
+    objj_msgSend(detailView, "addItem:", projectsTab);
+    objj_msgSend(detailView, "addItem:", invoicesTab);
 
- objj_msgSend(detailView, "setBackgroundColor:", objj_msgSend(CPColor, "whiteColor"));
+    objj_msgSend(detailView, "setBackgroundColor:", objj_msgSend(CPColor, "whiteColor"));
 
- objj_msgSend(containerView, "addSubview:", listView);
- objj_msgSend(containerView, "addSubview:", detailView);
- objj_msgSend(containerView, "setPosition:ofDividerAtIndex:", 600.0, 0);
+    objj_msgSend(containerView, "addSubview:", listView);
+    objj_msgSend(containerView, "addSubview:", detailView);
+    objj_msgSend(containerView, "setPosition:ofDividerAtIndex:", 600.0, 0);
 
- objj_msgSend(fullnameColumn, "bind:toObject:withKeyPath:options:", "value", objectsArrayController, "arrangedObjects", nil);
- objj_msgSend(phonesColumn, "bind:toObject:withKeyPath:options:", "value", objectsArrayController, "arrangedObjects", nil);
- objj_msgSend(emailsColumn, "bind:toObject:withKeyPath:options:", "value", objectsArrayController, "arrangedObjects", nil);
+    objj_msgSend(fullnameColumn, "bind:toObject:withKeyPath:options:", "value", objectsArrayController, "arrangedObjects", nil);
+    objj_msgSend(phonesColumn, "bind:toObject:withKeyPath:options:", "value", objectsArrayController, "arrangedObjects", nil);
+    objj_msgSend(emailsColumn, "bind:toObject:withKeyPath:options:", "value", objectsArrayController, "arrangedObjects", nil);
 
- objj_msgSend(self, "setView:", containerView);
+    objj_msgSend(self, "setView:", containerView);
 
- theTableView = tableView;
+    theTableView = tableView;
 }
 },["void"]), new objj_method(sel_getUid("observeValueForKeyPath:ofObject:change:context:"), function $PeopleViewController__observeValueForKeyPath_ofObject_change_context_(self, _cmd, keyPath, object, change, context)
 { with(self)
 {
- if( objj_msgSend(keyPath, "isEqual:", "searchText") )
- {
-  objj_msgSend(self, "refreshObjects");
-  return;
- }
- objj_msgSendSuper({ receiver:self, super_class:objj_getClass("PeopleViewController").super_class }, "observeValueForKeyPath:ofObject:change:context:", keyPath, object, change, context);
+    if( objj_msgSend(keyPath, "isEqual:", "searchText") )
+    {
+        objj_msgSend(self, "refreshObjects");
+        return;
+    } else if( objj_msgSend(keyPath, "isEqual:", "frameSize") )
+    {
+        var oldFrame = objj_msgSend(change, "valueForKey:", CPKeyValueChangeOldKey);
+        var newFrame = objj_msgSend(change, "valueForKey:", CPKeyValueChangeNewKey);
+        var heightDiff = newFrame.height-oldFrame.height;
+        if( object==editPersonAddressList )
+        {
+            var addressFrame = objj_msgSend(objj_msgSend(editPersonAddressList, "superview"), "frame");
+            addressFrame.size.height += heightDiff;
+            objj_msgSend(objj_msgSend(editPersonAddressList, "superview"), "setFrame:", addressFrame);
+            var phoneFrame = objj_msgSend(objj_msgSend(editPersonPhoneList, "superview"), "frame");
+            phoneFrame.origin.y += heightDiff;
+            objj_msgSend(objj_msgSend(editPersonPhoneList, "superview"), "setFrame:", phoneFrame);
+            var emailFrame = objj_msgSend(objj_msgSend(editPersonEmailList, "superview"), "frame");
+            emailFrame.origin.y += heightDiff;
+            objj_msgSend(objj_msgSend(editPersonEmailList, "superview"), "setFrame:", emailFrame);
+        } else if( object==editPersonPhoneList )
+        {
+            var phoneFrame = objj_msgSend(objj_msgSend(editPersonPhoneList, "superview"), "frame");
+            phoneFrame.size.height += heightDiff;
+            objj_msgSend(objj_msgSend(editPersonPhoneList, "superview"), "setFrame:", phoneFrame);
+            var emailFrame = objj_msgSend(objj_msgSend(editPersonEmailList, "superview"), "frame");
+            emailFrame.origin.y += heightDiff;
+            objj_msgSend(objj_msgSend(editPersonEmailList, "superview"), "setFrame:", emailFrame);
+        } else if( object==editPersonEmailList )
+        {
+            var emailFrame = objj_msgSend(objj_msgSend(editPersonEmailList, "superview"), "frame");
+            emailFrame.size.height += heightDiff;
+            objj_msgSend(objj_msgSend(editPersonEmailList, "superview"), "setFrame:", emailFrame);
+        }
+        var superviewFrame = objj_msgSend(objj_msgSend(objj_msgSend(object, "superview"), "superview"), "frame");
+        superviewFrame.size.height += heightDiff;
+        objj_msgSend(objj_msgSend(objj_msgSend(object, "superview"), "superview"), "setFrame:", superviewFrame);
+        return;
+    }
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("PeopleViewController").super_class }, "observeValueForKeyPath:ofObject:change:context:", keyPath, object, change, context);
 }
 },["void","CPString*","id","CPDictionary*","void*"]), new objj_method(sel_getUid("connection:didReceiveData:"), function $PeopleViewController__connection_didReceiveData_(self, _cmd, connection, data)
 { with(self)
 {
     if( connection == listConnection )
     {
-  objj_msgSend(objects, "release");
-  objects = objj_msgSend(CPArray, "array");
-  objj_msgSend(objectsArrayController, "bind:toObject:withKeyPath:options:", "contentArray", self, "objects", nil);
-  if( !objj_msgSend(data, "length") )
-   return;
-  var result = JSON.parse(data);
+        objj_msgSend(objects, "release");
+        objects = objj_msgSend(CPArray, "array");
+        objj_msgSend(objectsArrayController, "bind:toObject:withKeyPath:options:", "contentArray", self, "objects", nil);
+        if( !objj_msgSend(data, "length") )
+            return;
+        var result = JSON.parse(data);
         var peopleCount = result.length;
 
 
-  for( var i=0;i<peopleCount;i++ )
+        for( var i=0;i<peopleCount;i++ )
         {
             var personObj = result[i];
-   var phonesArray = personObj.phones.split("::");
-   var emailsArray = personObj.emails.split("::");
-   var addressesArray = personObj.addresses.split("::");
+            var phonesArray = personObj.phones.split("::");
+            var emailsArray = personObj.emails.split("::");
+            var addressesArray = personObj.addresses.split("::");
             var person = objj_msgSend(objj_msgSend(Person, "alloc"), "init");
-   person.index=personObj.id;
-   person.name = personObj.name;
-   person.surname = personObj.surname;
+            person.index=personObj.id;
+            person.name = personObj.name;
+            person.surname = personObj.surname;
             person.companyName = personObj.companyName;
             person.tags = personObj.tags;
             person.privacy = personObj.privacy;
             person.fiscalID = personObj.fiscalID;
             person.VAT = personObj.VAT;
 
-   person.isCompany = objj_msgSend(personObj.isCompany, "intValue");
-   for( var j=0;j<phonesArray.length-1;j++ )
-   {
-    var phoneArray = phonesArray[j].split(";");
-    var dictionaryEntry = objj_msgSend(objj_msgSend(DictionaryEntry, "alloc"), "initWithValue:forKey:", phoneArray[1], phoneArray[0]);
-                objj_msgSend(person.phones, "addObject:", dictionaryEntry);
-   }
-   for( var j=0;j<emailsArray.length-1;j++ )
-   {
+            person.isCompany = objj_msgSend(personObj.isCompany, "intValue");
+            for( var j=0;j<phonesArray.length-1;j++ )
+            {
+                var phoneArray = phonesArray[j].split(";");
+                objj_msgSend(person.phones, "addObject:", phoneArray);
+            }
+            for( var j=0;j<emailsArray.length-1;j++ )
+            {
                 var emailArray = emailsArray[j].split(";");
-                var dictionaryEntry = objj_msgSend(objj_msgSend(DictionaryEntry, "alloc"), "initWithValue:forKey:", emailArray[1], emailArray[0]);
-                objj_msgSend(person.emails, "addObject:", dictionaryEntry);
-   }
+                objj_msgSend(person.emails, "addObject:", emailArray);
+            }
 
+            for( var j=0;j<addressesArray.length-1;j++ )
+            {
+                var addressArray = addressesArray[j].split(";");
+                objj_msgSend(person.addresses, "addObject:", addressArray);
+            }
 
-
-
-
-
-
-            person.addresses = personObj.addresses;
-   objj_msgSend(objectsArrayController, "addObject:", person);
+            objj_msgSend(objectsArrayController, "addObject:", person);
         }
         listConnection=nil;
-  objj_msgSend(theTableView, "reloadData");
+        objj_msgSend(theTableView, "reloadData");
     }
     if( connection==deleteConnection )
- {
-  objj_msgSend(self, "errorFromResponse:", data);
-  deleteConnection=nil;
-  objj_msgSend(self, "refreshObjects");
- }
+    {
+        objj_msgSend(self, "errorFromResponse:", data);
+        deleteConnection=nil;
+        objj_msgSend(self, "refreshObjects");
+    }
 }
 },["void","CPURLConnection","CPString"]), new objj_method(sel_getUid("addPerson:"), function $PeopleViewController__addPerson_(self, _cmd, sender)
 { with(self)
 {
- var person=objj_msgSend(objj_msgSend(Person, "alloc"), "init");
- person.name = "Nuovo";
- person.surname ="Valore";
- objj_msgSend(objectsArrayController, "addObject:", person);
+    var person=objj_msgSend(objj_msgSend(Person, "alloc"), "init");
+    person.name = "Nuovo";
+    person.surname ="Valore";
+    objj_msgSend(objectsArrayController, "addObject:", person);
 }
 },["void","id"]), new objj_method(sel_getUid("removePerson:"), function $PeopleViewController__removePerson_(self, _cmd, sender)
 { with(self)
 {
- var personArray=objj_msgSend(objectsArrayController, "selectedObjects");
- var person=nil;
- if( objj_msgSend(personArray, "count") )
-  person = objj_msgSend(personArray, "objectAtIndex:", 0);
+    var personArray=objj_msgSend(objectsArrayController, "selectedObjects");
+    var person=nil;
+    if( objj_msgSend(personArray, "count") )
+        person = objj_msgSend(personArray, "objectAtIndex:", 0);
 
- if( person )
- {
-  var index=person.index;
-  var url=objj_msgSend(CPString, "stringWithFormat:", "%@","http://127.0.0.1/CRM2/PHP/contacts.php?task=DELETE");
-  var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
-  var content = objj_msgSend(CPString, "stringWithFormat:", "id=%d",index);
-  objj_msgSend(request, "setHTTPMethod:", "POST");
-  objj_msgSend(request, "setHTTPBody:", content);
-  objj_msgSend(request, "setValue:forHTTPHeaderField:", "application/x-www-form-urlencoded", "Content-Type");
-  deleteConnection = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, self);
- }
+    if( person )
+    {
+        var index=person.index;
+        var url=objj_msgSend(CPString, "stringWithFormat:", "%@","http://127.0.0.1/CRM2/PHP/contacts.php?task=DELETE");
+        var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
+        var content = objj_msgSend(CPString, "stringWithFormat:", "id=%d",index);
+        objj_msgSend(request, "setHTTPMethod:", "POST");
+        objj_msgSend(request, "setHTTPBody:", content);
+        objj_msgSend(request, "setValue:forHTTPHeaderField:", "application/x-www-form-urlencoded", "Content-Type");
+        deleteConnection = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, self);
+    }
 }
 },["void","id"]), new objj_method(sel_getUid("editPerson:"), function $PeopleViewController__editPerson_(self, _cmd, sender)
 { with(self)
@@ -667,13 +708,13 @@ inEditingPerson = newValue;
 { with(self)
 {
 
- var aView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,450,350));
- objj_msgSend(aView, "setBackgroundColor:", objj_msgSend(CPColor, "lightGrayColor"));
- var phoneField = objj_msgSend(objj_msgSend(THRTextField_Email, "alloc"), "initWithFrame:", CGRectMake(20,20,250,28));
- objj_msgSend(phoneField, "setEditable:", YES);
- objj_msgSend(phoneField, "setBezeled:", YES);
- objj_msgSend(aView, "addSubview:", phoneField);
- var sharedEditingWindow = objj_msgSend(EditingWindow, "showEditingWindowWithView:delegate:endSelector:", aView, self, sel_getUid("didEndEditContactSheet:"));
+    var aView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,450,350));
+    objj_msgSend(aView, "setBackgroundColor:", objj_msgSend(CPColor, "lightGrayColor"));
+    var phoneField = objj_msgSend(objj_msgSend(THRTextField_Email, "alloc"), "initWithFrame:", CGRectMake(20,20,250,28));
+    objj_msgSend(phoneField, "setEditable:", YES);
+    objj_msgSend(phoneField, "setBezeled:", YES);
+    objj_msgSend(aView, "addSubview:", phoneField);
+    var sharedEditingWindow = objj_msgSend(EditingWindow, "showEditingWindowWithView:delegate:endSelector:", aView, self, sel_getUid("didEndEditContactSheet:"));
 }
 },["void","id"]), new objj_method(sel_getUid("didEndEditContactSheet:"), function $PeopleViewController__didEndEditContactSheet_(self, _cmd, sheet)
 { with(self)
@@ -683,30 +724,30 @@ inEditingPerson = newValue;
 },["void","id"]), new objj_method(sel_getUid("tableView:dataViewForTableColumn:row:"), function $PeopleViewController__tableView_dataViewForTableColumn_row_(self, _cmd, aTableView, aTableColumn, aRow)
 { with(self)
 {
- if( aTableColumn != nil)
- {
-  if( objj_msgSend(objj_msgSend(aTableColumn, "identifier"), "isEqual:", "Nome") )
-   return tvcellFullname;
-  if( objj_msgSend(objj_msgSend(aTableColumn, "identifier"), "isEqual:", "Telefoni") )
-   return tvcellPhones;
-  if( objj_msgSend(objj_msgSend(aTableColumn, "identifier"), "isEqual:", "Email") )
-   return tvcellEmails;
-  if( objj_msgSend(objj_msgSend(aTableColumn, "identifier"), "isEqual:", "Indirizzo") )
-   return tvcellAddresses;
- }
- return nil;
+    if( aTableColumn != nil)
+    {
+        if( objj_msgSend(objj_msgSend(aTableColumn, "identifier"), "isEqual:", "Nome") )
+            return tvcellFullname;
+        if( objj_msgSend(objj_msgSend(aTableColumn, "identifier"), "isEqual:", "Telefoni") )
+            return tvcellPhones;
+        if( objj_msgSend(objj_msgSend(aTableColumn, "identifier"), "isEqual:", "Email") )
+            return tvcellEmails;
+        if( objj_msgSend(objj_msgSend(aTableColumn, "identifier"), "isEqual:", "Indirizzo") )
+            return tvcellAddresses;
+    }
+    return nil;
 }
 },["id","CPTableView","CPTableColumn","int"]), new objj_method(sel_getUid("errorFromResponse:"), function $PeopleViewController__errorFromResponse_(self, _cmd, message)
 { with(self)
 {
- var statusArray = message.split(";");
- if( statusArray.length )
- {
-  var statusCode = parseInt(statusArray[0]);
-  if( !statusCode )
-   alert(statusArray[1]);
- }
- return NO;
+    var statusArray = message.split(";");
+    if( statusArray.length )
+    {
+        var statusCode = parseInt(statusArray[0]);
+        if( !statusCode )
+            alert(statusArray[1]);
+    }
+    return NO;
 }
 },["BOOL","CPString"]), new objj_method(sel_getUid("profileView"), function $PeopleViewController__profileView(self, _cmd)
 { with(self)
@@ -736,32 +777,95 @@ inEditingPerson = newValue;
 },["CPView"]), new objj_method(sel_getUid("editPersonView"), function $PeopleViewController__editPersonView(self, _cmd)
 { with(self)
 {
-    var editPersonView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,700,500));
+    var editPersonView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,900,355));
 
 
     objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Dati generali", CGRectMake(20,20,120,25)));
+    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRCheckBox, "checkboxWithTitle:frame:bindTo:withKeyPath:", "E' una società", CGRectMake(150,20,150,25), self.inEditingPerson, "isCompany"));
+    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Nome", CGRectMake(150,45,200,25), 0, self, "inEditingPerson.name"));
+    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Cognome", CGRectMake(150,70,200,25), 0, self.inEditingPerson, "surname"));
+    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Società", CGRectMake(150,95,200,25), 0, self.inEditingPerson, "companyName"));
+    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Etichette", CGRectMake(150,120,200,25), 0, self.inEditingPerson, "tags"));
+
+
     objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Privacy", CGRectMake(20,155,120,25)));
+    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRCheckBox, "checkboxWithTitle:frame:bindTo:withKeyPath:", "Scheda compilata", CGRectMake(150,155,150,25), self.inEditingPerson, "privacy"));
+
+
     objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Dati fiscali", CGRectMake(20,190,120,25)));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Indirizzo", CGRectMake(20,250,120,25)));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Telefoni", CGRectMake(20,285,120,25)));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Email", CGRectMake(20,320,120,25)));
+    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Codice fiscale", CGRectMake(150,190,200,25), 0, self.inEditingPerson, "fiscalID"));
+    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Partita IVA", CGRectMake(150,215,200,25), 0, self.inEditingPerson, "VAT"));
 
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRCheckBox, "checkboxWithTitle:frame:bindTo:withKeyPath:", "E' una società", CGRectMake(150,20,120,25), self.inEditingPerson, "isCompany"));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Nome", CGRectMake(150,45,120,25), 0, self, "inEditingPerson.name"));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Cognome", CGRectMake(150,70,120,25), 0, self.inEditingPerson, "surname"));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Società", CGRectMake(150,95,120,25), 0, self.inEditingPerson, "companyName"));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Etichette", CGRectMake(150,120,120,25), 0, self.inEditingPerson, "tags"));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRCheckBox, "checkboxWithTitle:frame:bindTo:withKeyPath:", "Scheda compilata", CGRectMake(150,155,120,25), self.inEditingPerson, "privacy"));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Codice fiscale", CGRectMake(150,190,120,25), 0, self.inEditingPerson, "fiscalID"));
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:bindTo:withKeyPath:", "Partita IVA", CGRectMake(150,215,120,25), 0, self.inEditingPerson, "VAT"));
+    var minHeight;
+    var yOrigin;
 
-    objj_msgSend(editPersonView, "addSubview:", objj_msgSend(objj_msgSend(AddressTable, "alloc"), "initWithFrame:bindTo:withKeyPath:", CGRectMake(150,250,500,150), self.inEditingPerson, "addresses"));
+
+    var addressRowTemplate = objj_msgSend(objj_msgSend(THRRowTemplate, "alloc"), "initWithSubviewsArray:", objj_msgSend(CPArray, "arrayWithObjects:", 
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "etichette", CGRectMake(0,0,70,24), 0),
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "città", CGRectMake(0,0,130,24), 0),
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "indirizzo", CGRectMake(0,0,200,24), 0),
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "CAP", CGRectMake(0,0,50,24), 0),
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "provincia", CGRectMake(0,0,50,24), 0),
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "stato", CGRectMake(0,0,100,24), 0)
+   ));
+    minHeight = (objj_msgSend(inEditingPerson.addresses, "count") ? objj_msgSend(inEditingPerson.addresses, "count") : 1)*addressRowTemplate.height+5;
+    yOrigin=250+minHeight;
+
+    var editPersonAddressSection = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,250,900,minHeight));
+    objj_msgSend(editPersonAddressSection, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Indirizzo", CGRectMake(20,0,120,25)));
+
+    editPersonAddressList = objj_msgSend(objj_msgSend(THRList, "alloc"), "initWithFrame:rowTemplate:bindTo:withKeyPath:", CGRectMake(150,0,750,30), addressRowTemplate, self.inEditingPerson, "addresses");
+
+    objj_msgSend(editPersonAddressSection, "addSubview:", editPersonAddressList);
+    objj_msgSend(editPersonView, "addSubview:", editPersonAddressSection);
+
+
+
+    var phoneRowTemplate = objj_msgSend(objj_msgSend(THRRowTemplate, "alloc"), "initWithSubviewsArray:", objj_msgSend(CPArray, "arrayWithObjects:", 
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "etichetta", CGRectMake(0,0,70,24), 0),
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "telefono", CGRectMake(0,0,200,24), 0)
+   ));
+    minHeight = (objj_msgSend(inEditingPerson.phones, "count") ? objj_msgSend(inEditingPerson.phones, "count") : 1)*phoneRowTemplate.height+5;
+
+    var editPersonPhoneSection = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,yOrigin,900,minHeight));
+    yOrigin += minHeight;
+
+    objj_msgSend(editPersonPhoneSection, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Telefoni", CGRectMake(20,0,120,25)));
+
+    editPersonPhoneList = objj_msgSend(objj_msgSend(THRList, "alloc"), "initWithFrame:rowTemplate:bindTo:withKeyPath:", CGRectMake(150,0,750,30), phoneRowTemplate, self.inEditingPerson, "phones");
+    objj_msgSend(editPersonPhoneSection, "addSubview:", editPersonPhoneList);
+    objj_msgSend(editPersonView, "addSubview:", editPersonPhoneSection);
+
+
+    var emailRowTemplate = objj_msgSend(objj_msgSend(THRRowTemplate, "alloc"), "initWithSubviewsArray:", objj_msgSend(CPArray, "arrayWithObjects:", 
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "etichetta", CGRectMake(0,0,70,24), 0),
+        objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", "email", CGRectMake(0,0,200,24), 0)
+   ));
+    minHeight = (objj_msgSend(inEditingPerson.emails, "count") ? objj_msgSend(inEditingPerson.emails, "count") : 1)*emailRowTemplate.height+5;
+
+    var editPersonEmailSection = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,yOrigin,900,minHeight));
+    yOrigin += minHeight;
+
+    objj_msgSend(editPersonEmailSection, "addSubview:", objj_msgSend(THRLabel, "labelWithTitle:frame:", "Email", CGRectMake(20,0,120,25)));
+
+    editPersonEmailList = objj_msgSend(objj_msgSend(THRList, "alloc"), "initWithFrame:rowTemplate:bindTo:withKeyPath:", CGRectMake(150,0,750,30), emailRowTemplate, self.inEditingPerson, "emails");
+    objj_msgSend(editPersonEmailSection, "addSubview:", editPersonEmailList);
+    objj_msgSend(editPersonView, "addSubview:", editPersonEmailSection);
+
+    objj_msgSend(editPersonAddressList, "addObserver:forKeyPath:options:context:", self, "frameSize", (CPKeyValueObservingOptionNew|CPKeyValueObservingOptionOld), nil);
+    objj_msgSend(editPersonPhoneList, "addObserver:forKeyPath:options:context:", self, "frameSize", (CPKeyValueObservingOptionNew|CPKeyValueObservingOptionOld), nil);
+    objj_msgSend(editPersonEmailList, "addObserver:forKeyPath:options:context:", self, "frameSize", (CPKeyValueObservingOptionNew|CPKeyValueObservingOptionOld), nil);
+
+    var frameView = objj_msgSend(editPersonView, "frame");
+    frameView.size.height = yOrigin;
+    objj_msgSend(editPersonView, "setFrame:", frameView);
+
     return editPersonView;
 }
 },["CPView"])]);
 }
 
-p;8;Person.jt;6109;@STATIC;1.0;I;21;Foundation/CPObject.jt;6064;
+p;8;Person.jt;6110;@STATIC;1.0;I;21;Foundation/CPObject.jt;6065;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 
@@ -940,7 +1044,7 @@ privacy = newValue;
     aPerson.fiscalID=fiscalID;
     aPerson.VAT=VAT;
     aPerson.addresses=addresses;
-    aPerson.phone=phones;
+    aPerson.phones=phones;
     aPerson.emails=emails;
     aPerson.isCompany=isCompany;
     aPerson.privacy=privacy;
@@ -987,7 +1091,7 @@ value = newValue;
 },["id","CPString","CPString"])]);
 }
 
-p;13;THRCheckBox.jt;1168;@STATIC;1.0;I;21;Foundation/CPObject.jt;1123;
+p;13;THRCheckBox.jt;1259;@STATIC;1.0;I;21;Foundation/CPObject.jt;1214;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 
@@ -1000,6 +1104,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("checkboxWithTitle:fram
     if (checkbox)
     {
         objj_msgSend(checkbox, "setTitle:", aTitle);
+        objj_msgSend(checkbox, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 15));
     }
     return checkbox;
 }
@@ -1037,6 +1142,114 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("labelWithTitle:frame:"
     return textField;
 }
 },["THRLabel","CPString","CGRect"])]);
+}
+
+p;9;THRList.jt;5157;@STATIC;1.0;I;15;AppKit/CPView.ji;16;THRRowTemplate.jt;5097;
+
+objj_executeFile("AppKit/CPView.j", NO);
+objj_executeFile("THRRowTemplate.j", YES);
+
+{var the_class = objj_allocateClassPair(CPView, "THRList"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("contentArray"), new objj_ivar("rowTemplate"), new objj_ivar("contentString")]);
+objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("contentString"), function $THRList__contentString(self, _cmd)
+{ with(self)
+{
+return contentString;
+}
+},["id"]),
+new objj_method(sel_getUid("setContentString:"), function $THRList__setContentString_(self, _cmd, newValue)
+{ with(self)
+{
+contentString = newValue;
+}
+},["void","id"]), new objj_method(sel_getUid("initWithFrame:rowTemplate:bindTo:withKeyPath:"), function $THRList__initWithFrame_rowTemplate_bindTo_withKeyPath_(self, _cmd, aRect, aRowTemplate, aController, aKeyPath)
+{ with(self)
+{
+    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("THRList").super_class }, "initWithFrame:", aRect))
+    {
+        rowTemplate = aRowTemplate;
+        contentArray = objj_msgSend(CPArray, "array");
+
+        objj_msgSend(self, "addObserver:forKeyPath:options:context:", self, "contentArray", (CPKeyValueObservingOptionNew), nil);
+        objj_msgSend(self, "bind:toObject:withKeyPath:options:", "contentArray", aController, aKeyPath, nil);
+
+    }
+    return self;
+}
+},["id","CGRect","THRRowTemplate","id","CPString"]), new objj_method(sel_getUid("observeValueForKeyPath:ofObject:change:context:"), function $THRList__observeValueForKeyPath_ofObject_change_context_(self, _cmd, keyPath, object, change, context)
+{ with(self)
+{
+    if( objj_msgSend(keyPath, "isEqual:", "contentArray") )
+    {
+        if( contentArray )
+        {
+            objj_msgSend(self, "updateLayout");
+        }
+        return;
+    }
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("THRList").super_class }, "observeValueForKeyPath:ofObject:change:context:", keyPath, object, change, context);
+}
+},["void","CPString*","id","CPDictionary*","void*"]), new objj_method(sel_getUid("updateLayout"), function $THRList__updateLayout(self, _cmd)
+{ with(self)
+{
+    var rowsCount = objj_msgSend(contentArray, "count");
+    var rowHeight = rowTemplate.height;
+    var rowWidth = objj_msgSend(self, "bounds").size.width-100;
+    var frameHeight = rowHeight * rowsCount;
+    var frameWidth = rowWidth + 100.0;
+    var oldFrame = objj_msgSend(self, "frame");
+    var subViewsCount = objj_msgSend(objj_msgSend(self, "subviews"), "count");
+    for( var i=subViewsCount-1;i>=0;i--)
+        objj_msgSend(objj_msgSend(objj_msgSend(self, "subviews"), "objectAtIndex:", i), "removeFromSuperview");
+    var odd=YES;
+    for( var i=0;i<rowsCount; i++ )
+    {
+        var newRow = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0+rowHeight*i,frameWidth, rowHeight));
+        if( (i>0) || (i==0 && rowsCount>1) )
+        {
+            var removeButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(rowWidth+5.0,(rowHeight-24)/2.0,40,24));
+            objj_msgSend(removeButton, "setTitle:", "-");
+            objj_msgSend(removeButton, "setBezelStyle:", CPRoundedBezelStyle);
+            objj_msgSend(removeButton, "setTarget:", self);
+            objj_msgSend(removeButton, "setAction:", sel_getUid("removeRow:"));
+            objj_msgSend(removeButton, "setTag:", (100+i));
+            objj_msgSend(newRow, "addSubview:", removeButton);
+        }
+        if( i==(rowsCount-1) )
+        {
+            var addButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(rowWidth+50.0,(rowHeight-24)/2.0,40,24));
+            objj_msgSend(addButton, "setTitle:", "+");
+            objj_msgSend(addButton, "setBezelStyle:", CPRoundedBezelStyle);
+            objj_msgSend(addButton, "setTarget:", self);
+            objj_msgSend(addButton, "setAction:", sel_getUid("addRow:"));
+            objj_msgSend(newRow, "addSubview:", addButton);
+        }
+        odd=!odd;
+        if( odd )
+        {
+            objj_msgSend(newRow, "setBackgroundColor:", objj_msgSend(CPColor, "colorWithHexString:", "E0ECFA"));
+        }
+        var newRowTemplate =objj_msgSend(rowTemplate, "newRowAtIndex:withContent:", i, objj_msgSend(contentArray, "objectAtIndex:", i));
+        objj_msgSend(newRow, "addSubview:", newRowTemplate);
+        objj_msgSend(self, "addSubview:", newRow);
+    }
+    objj_msgSend(self, "setFrame:", CGRectMake(oldFrame.origin.x, oldFrame.origin.y, frameWidth, frameHeight));
+}
+},["void"]), new objj_method(sel_getUid("removeRow:"), function $THRList__removeRow_(self, _cmd, sender)
+{ with(self)
+{
+    var rowIndex = objj_msgSend(sender, "tag")-100;
+    objj_msgSend(contentArray, "removeObjectAtIndex:", rowIndex);
+    objj_msgSend(self, "updateLayout");
+}
+},["void","id"]), new objj_method(sel_getUid("addRow:"), function $THRList__addRow_(self, _cmd, sender)
+{ with(self)
+{
+    objj_msgSend(contentArray, "addObject:", objj_msgSend(rowTemplate, "defaultRowString"));
+    objj_msgSend(self, "updateLayout");
+}
+},["void","id"])]);
 }
 
 p;11;THRPicker.jt;6906;@STATIC;1.0;I;21;Foundation/CPObject.jt;6861;
@@ -1196,6 +1409,91 @@ return selectedObject;
 },["void","id"])]);
 }
 
+p;16;THRRowTemplate.jt;3203;@STATIC;1.0;I;21;Foundation/CPObject.jt;3158;
+
+objj_executeFile("Foundation/CPObject.j", NO);
+
+{var the_class = objj_allocateClassPair(CPObject, "THRRowTemplate"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("subviewsArray"), new objj_ivar("height"), new objj_ivar("width")]);
+objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("height"), function $THRRowTemplate__height(self, _cmd)
+{ with(self)
+{
+return height;
+}
+},["id"]),
+new objj_method(sel_getUid("width"), function $THRRowTemplate__width(self, _cmd)
+{ with(self)
+{
+return width;
+}
+},["id"]), new objj_method(sel_getUid("initWithSubviewsArray:"), function $THRRowTemplate__initWithSubviewsArray_(self, _cmd, aSubviewsArray)
+{ with(self)
+{
+    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("THRRowTemplate").super_class }, "init"))
+    {
+        width=5.0;
+        height=3.0;
+
+        subviewsArray = aSubviewsArray;
+        var c=objj_msgSend(subviewsArray, "count");
+        for( var i=0;i<c;i++ )
+        {
+            var currentView = objj_msgSend(subviewsArray, "objectAtIndex:", i);
+            var oldViewFrame = objj_msgSend(currentView, "frame");
+            height = (height>6.0+oldViewFrame.size.height ? height : 6.0+oldViewFrame.size.height);
+        }
+
+        for( var i=0;i<c;i++ )
+        {
+            var currentView = objj_msgSend(subviewsArray, "objectAtIndex:", i);
+            var oldViewFrame = objj_msgSend(currentView, "frame");
+            var newViewFrame = CGRectMake(width, (height-oldViewFrame.size.height)/2.0,oldViewFrame.size.width, oldViewFrame.size.height);
+            width += (oldViewFrame.size.width+8);
+            objj_msgSend(currentView, "setFrame:", newViewFrame);
+        }
+        width -= (i ? 3 : 0);
+    }
+    return self;
+}
+},["id","CPArray"]), new objj_method(sel_getUid("newRowAtIndex:withContent:"), function $THRRowTemplate__newRowAtIndex_withContent_(self, _cmd, aIndex, content)
+{ with(self)
+{
+    var c=objj_msgSend(subviewsArray, "count");
+    var d=objj_msgSend(content, "count");
+
+    var newRow = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0,0,width, height));
+    for( var i=0;i<c;i++ )
+    {
+        var currentView = objj_msgSend(objj_msgSend(subviewsArray, "objectAtIndex:", i), "copy");
+        if( i<d )
+        {
+
+            if( objj_msgSend(currentView, "isKindOfClass:", CPClassFromString("CPTextField")) )
+            {
+                objj_msgSend(currentView, "setStringValue:", objj_msgSend(content, "objectAtIndex:", i));
+            }
+        }
+        objj_msgSend(currentView, "setTag:", (aIndex*1000+i));
+        objj_msgSend(newRow, "addSubview:", currentView);
+    }
+    return newRow;
+}
+},["id","int","CPArray"]), new objj_method(sel_getUid("defaultRowString"), function $THRRowTemplate__defaultRowString(self, _cmd)
+{ with(self)
+{
+    var c=objj_msgSend(subviewsArray, "count");
+    var newContent = objj_msgSend(CPArray, "array");
+    for( var i=0;i<c;i++ )
+    {
+        var currentView = objj_msgSend(subviewsArray, "objectAtIndex:", i);
+        objj_msgSend(newContent, "addObject:", "");
+    }
+    return newContent;
+}
+},["id"])]);
+}
+
 p;14;THRTableView.jt;4299;@STATIC;1.0;I;21;Foundation/CPObject.jt;4254;
 
 objj_executeFile("Foundation/CPObject.j", NO);
@@ -1284,7 +1582,7 @@ contentString = newValue;
 },["void","CPTableView","id","CPTableColumn","int"])]);
 }
 
-p;14;THRTextField.jt;3436;@STATIC;1.0;I;21;Foundation/CPObject.jt;3391;
+p;14;THRTextField.jt;3849;@STATIC;1.0;I;21;Foundation/CPObject.jt;3804;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 
@@ -1302,7 +1600,13 @@ new objj_method(sel_getUid("setValidationMask:"), function $THRTextField__setVal
 {
 validationMask = newValue;
 }
-},["void","id"]), new objj_method(sel_getUid("validateValueSelf"), function $THRTextField__validateValueSelf(self, _cmd)
+},["void","id"]), new objj_method(sel_getUid("copy"), function $THRTextField__copy(self, _cmd)
+{ with(self)
+{
+    var newObject = objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", objj_msgSend(self, "placeholderString"), objj_msgSend(self, "frame"), validationMask);
+    return newObject;
+}
+},["THRTextField"]), new objj_method(sel_getUid("validateValueSelf"), function $THRTextField__validateValueSelf(self, _cmd)
 { with(self)
 {
 }
@@ -1335,6 +1639,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("textfieldWithPlacehold
         objj_msgSend(textfield, "setPlaceholderString:", aPlaceholder);
         objj_msgSend(textfield, "setEditable:", YES);
         textfield.validationMask=aMask;
+        objj_msgSend(textfield, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 15));
     }
     return textfield;
 }
@@ -1493,7 +1798,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 },["void","CPCoder"])]);
 }
 
-p;15;TVCell_Emails.jt;2934;@STATIC;1.0;I;21;Foundation/CPObject.jI;15;AppKit/CPView.jt;2869;
+p;15;TVCell_Emails.jt;3145;@STATIC;1.0;I;21;Foundation/CPObject.jI;15;AppKit/CPView.jt;3080;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("AppKit/CPView.j", NO);
@@ -1504,42 +1809,42 @@ objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), function $TVCell_Emails__initWithFrame_(self, _cmd, frame)
 { with(self)
 {
- self=objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TVCell_Emails").super_class }, "initWithFrame:", frame);
- if( self )
- {
-  firstLabel = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(3.0,3.0,210.0,20.0));
-  secondLabel = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(3.0,26.0,210.0,20.0));
+    self=objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TVCell_Emails").super_class }, "initWithFrame:", frame);
+    if( self )
+    {
+        firstLabel = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(3.0,3.0,210.0,20.0));
+        secondLabel = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(3.0,26.0,210.0,20.0));
 
-  objj_msgSend(firstLabel, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 14.0));
-  objj_msgSend(secondLabel, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 14.0));
+        objj_msgSend(firstLabel, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 14.0));
+        objj_msgSend(secondLabel, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 14.0));
         objj_msgSend(firstLabel, "setAlignment:",  CPRightTextAlignment);
         objj_msgSend(secondLabel, "setAlignment:",  CPRightTextAlignment);
 
-  objj_msgSend(self, "addSubview:", firstLabel);
-  objj_msgSend(self, "addSubview:", secondLabel);
- }
- return self;
+        objj_msgSend(self, "addSubview:", firstLabel);
+        objj_msgSend(self, "addSubview:", secondLabel);
+    }
+    return self;
 }
 },["id","CGRect"]), new objj_method(sel_getUid("setObjectValue:"), function $TVCell_Emails__setObjectValue_(self, _cmd, value)
 { with(self)
 {
- if( value )
- {
-  var addressesCount=objj_msgSend(value.emails, "count");
-  if( addressesCount )
-  {
-   objj_msgSend(firstLabel, "setStringValue:", objj_msgSend(value.emails, "objectAtIndex:", 0).value);
-   if( addressesCount>1 )
-   {
-    objj_msgSend(secondLabel, "setStringValue:", objj_msgSend(value.emails, "objectAtIndex:", 1).value);
-   }
-  }
- }
- else
- {
-  objj_msgSend(firstLabel, "setStringValue:", "");
-  objj_msgSend(secondLabel, "setStringValue:", "");
- }
+    if( value )
+    {
+        var addressesCount=objj_msgSend(value.emails, "count");
+        if( addressesCount )
+        {
+            objj_msgSend(firstLabel, "setStringValue:", objj_msgSend(objj_msgSend(value.emails, "objectAtIndex:", 0), "objectAtIndex:", 1));
+            if( addressesCount>1 )
+            {
+                objj_msgSend(secondLabel, "setStringValue:", objj_msgSend(objj_msgSend(value.emails, "objectAtIndex:", 1), "objectAtIndex:", 1));
+            }
+        }
+    }
+    else
+    {
+        objj_msgSend(firstLabel, "setStringValue:", "");
+        objj_msgSend(secondLabel, "setStringValue:", "");
+    }
 }
 },["void","id"]), new objj_method(sel_getUid("initWithCoder:"), function $TVCell_Emails__initWithCoder_(self, _cmd, aCoder)
 { with(self)
@@ -1638,7 +1943,7 @@ secondaryLabel = newValue;
         objj_msgSend(aCoder, "encodeObject:forKey:", secondaryLabel, "secondaryLabel");
 }
 },["void","CPCoder"])]);
-}p;15;TVCell_Phones.jt;4208;@STATIC;1.0;I;21;Foundation/CPObject.jI;15;AppKit/CPView.jt;4143;
+}p;15;TVCell_Phones.jt;4568;@STATIC;1.0;I;21;Foundation/CPObject.jI;15;AppKit/CPView.jt;4503;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("AppKit/CPView.j", NO);
@@ -1649,57 +1954,57 @@ objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), function $TVCell_Phones__initWithFrame_(self, _cmd, frame)
 { with(self)
 {
- self=objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TVCell_Phones").super_class }, "initWithFrame:", frame);
- if( self )
- {
-  firstLabel = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(3.0,3.0,110.0,20.0));
-  secondLabel = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(3.0,26.0,110.0,20.0));
+    self=objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TVCell_Phones").super_class }, "initWithFrame:", frame);
+    if( self )
+    {
+        firstLabel = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(3.0,3.0,110.0,20.0));
+        secondLabel = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(3.0,26.0,110.0,20.0));
 
-  firstTag = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(115.0,3.0,55.0,20.0));
-  secondTag = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(115.0,26.0,55.0,20.0));
+        firstTag = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(115.0,3.0,55.0,20.0));
+        secondTag = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(115.0,26.0,55.0,20.0));
 
-  objj_msgSend(firstLabel, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 14.0));
-  objj_msgSend(secondLabel, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 14.0));
+        objj_msgSend(firstLabel, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 14.0));
+        objj_msgSend(secondLabel, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 14.0));
         objj_msgSend(firstLabel, "setAlignment:",  CPRightTextAlignment);
         objj_msgSend(secondLabel, "setAlignment:",  CPRightTextAlignment);
 
-  objj_msgSend(firstTag, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 12.0));
-  objj_msgSend(firstTag, "setTextColor:", objj_msgSend(CPColor, "grayColor"));
-  objj_msgSend(secondTag, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 12.0));
-  objj_msgSend(secondTag, "setTextColor:", objj_msgSend(CPColor, "grayColor"));
-  objj_msgSend(self, "addSubview:", firstLabel);
-  objj_msgSend(self, "addSubview:", secondLabel);
-  objj_msgSend(self, "addSubview:", firstTag);
-  objj_msgSend(self, "addSubview:", secondTag);
- }
- return self;
+        objj_msgSend(firstTag, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 12.0));
+        objj_msgSend(firstTag, "setTextColor:", objj_msgSend(CPColor, "grayColor"));
+        objj_msgSend(secondTag, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 12.0));
+        objj_msgSend(secondTag, "setTextColor:", objj_msgSend(CPColor, "grayColor"));
+        objj_msgSend(self, "addSubview:", firstLabel);
+        objj_msgSend(self, "addSubview:", secondLabel);
+        objj_msgSend(self, "addSubview:", firstTag);
+        objj_msgSend(self, "addSubview:", secondTag);
+    }
+    return self;
 }
 },["id","CGRect"]), new objj_method(sel_getUid("setObjectValue:"), function $TVCell_Phones__setObjectValue_(self, _cmd, value)
 { with(self)
 {
- if( value )
- {
-  var phonesCount;
-  phonesCount=objj_msgSend(value.phones, "count");
+    if( value )
+    {
+        var phonesCount;
+        phonesCount=objj_msgSend(value.phones, "count");
 
-  if( phonesCount )
-  {
-   objj_msgSend(firstLabel, "setStringValue:", objj_msgSend(value.phones, "objectAtIndex:", 0).value);
-   objj_msgSend(firstTag, "setStringValue:", objj_msgSend(value.phones, "objectAtIndex:", 0).key);
-   if( phonesCount>1 )
-   {
-    objj_msgSend(secondLabel, "setStringValue:", objj_msgSend(value.phones, "objectAtIndex:", 1).value);
-    objj_msgSend(secondTag, "setStringValue:", objj_msgSend(value.phones, "objectAtIndex:", 1).key);
-   }
-  }
- }
- else
- {
-  objj_msgSend(firstLabel, "setStringValue:", "");
-  objj_msgSend(secondLabel, "setStringValue:", "");
-  objj_msgSend(firstTag, "setStringValue:", "");
-  objj_msgSend(secondTag, "setStringValue:", "");
- }
+        if( phonesCount )
+        {
+            objj_msgSend(firstLabel, "setStringValue:", objj_msgSend(objj_msgSend(value.phones, "objectAtIndex:", 0), "objectAtIndex:", 1));
+            objj_msgSend(firstTag, "setStringValue:", objj_msgSend(objj_msgSend(value.phones, "objectAtIndex:", 0), "objectAtIndex:", 0));
+            if( phonesCount>1 )
+            {
+                objj_msgSend(secondLabel, "setStringValue:", objj_msgSend(objj_msgSend(value.phones, "objectAtIndex:", 1), "objectAtIndex:", 1));
+                objj_msgSend(secondTag, "setStringValue:", objj_msgSend(objj_msgSend(value.phones, "objectAtIndex:", 1), "objectAtIndex:", 0));
+            }
+        }
+    }
+    else
+    {
+        objj_msgSend(firstLabel, "setStringValue:", "");
+        objj_msgSend(secondLabel, "setStringValue:", "");
+        objj_msgSend(firstTag, "setStringValue:", "");
+        objj_msgSend(secondTag, "setStringValue:", "");
+    }
 }
 },["void","id"]), new objj_method(sel_getUid("initWithCoder:"), function $TVCell_Phones__initWithCoder_(self, _cmd, aCoder)
 { with(self)

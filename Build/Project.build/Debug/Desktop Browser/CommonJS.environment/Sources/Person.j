@@ -1,4 +1,4 @@
-@STATIC;1.0;I;21;Foundation/CPObject.jt;6064;
+@STATIC;1.0;I;21;Foundation/CPObject.jt;6065;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 
@@ -177,7 +177,7 @@ privacy = newValue;
     aPerson.fiscalID=fiscalID;
     aPerson.VAT=VAT;
     aPerson.addresses=addresses;
-    aPerson.phone=phones;
+    aPerson.phones=phones;
     aPerson.emails=emails;
     aPerson.isCompany=isCompany;
     aPerson.privacy=privacy;

@@ -1,4 +1,4 @@
-@STATIC;1.0;I;21;Foundation/CPObject.jt;3391;
+@STATIC;1.0;I;21;Foundation/CPObject.jt;3804;
 
 objj_executeFile("Foundation/CPObject.j", NO);
 
@@ -16,7 +16,13 @@ new objj_method(sel_getUid("setValidationMask:"), function $THRTextField__setVal
 {
 validationMask = newValue;
 }
-},["void","id"]), new objj_method(sel_getUid("validateValueSelf"), function $THRTextField__validateValueSelf(self, _cmd)
+},["void","id"]), new objj_method(sel_getUid("copy"), function $THRTextField__copy(self, _cmd)
+{ with(self)
+{
+    var newObject = objj_msgSend(THRTextField, "textfieldWithPlaceholder:frame:validationMask:", objj_msgSend(self, "placeholderString"), objj_msgSend(self, "frame"), validationMask);
+    return newObject;
+}
+},["THRTextField"]), new objj_method(sel_getUid("validateValueSelf"), function $THRTextField__validateValueSelf(self, _cmd)
 { with(self)
 {
 }
@@ -49,6 +55,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("textfieldWithPlacehold
         objj_msgSend(textfield, "setPlaceholderString:", aPlaceholder);
         objj_msgSend(textfield, "setEditable:", YES);
         textfield.validationMask=aMask;
+        objj_msgSend(textfield, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 15));
     }
     return textfield;
 }

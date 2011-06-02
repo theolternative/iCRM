@@ -13,6 +13,7 @@
         [textfield setPlaceholderString:aPlaceholder];
         [textfield setEditable:YES];
         textfield.validationMask=aMask;
+        [textfield setFont:[CPFont systemFontOfSize:15]];
     }
     return textfield;
 }
@@ -27,7 +28,11 @@
     return textfield;
 }
 
-
+- (THRTextField) copy
+{
+    var newObject = [THRTextField textfieldWithPlaceholder:[self placeholderString] frame:[self frame] validationMask:validationMask];
+    return newObject;
+}
 - (CPString) validateValueSelf
 {
 }

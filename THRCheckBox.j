@@ -10,6 +10,7 @@
     if (checkbox)
     {
         [checkbox setTitle:aTitle];
+        [checkbox setFont:[CPFont systemFontOfSize:15]];
     }
     return checkbox;
 }
